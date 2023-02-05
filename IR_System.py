@@ -19,6 +19,7 @@ stop_words = open(r"./stopwords.txt", "r").read().split()
 def collect_info(coll_files, stop_words):
     files = []
     list_of_words = []
+    vocabulary = set([])
     for file in coll_files:
         with open(r"./coll/" + file, "r") as f:
             soup = BeautifulSoup(f, 'lxml') 
@@ -35,13 +36,14 @@ def collect_info(coll_files, stop_words):
                 list_of_words = [porter.stem(word, 0, len(word)-1) for word in list_of_words]
                 
                 temptxt = list(set(list_of_words) - set(stop_words))
-
+                # print(set(temptxt))
+                vocabulary.update(set(temptxt))
                 files.append({doc.find_all('docno')[0].text.strip(): temptxt}) #We cannot check the length of the list of words because we don't know how many words are in the stop words list
-    return files
+    return files, vocabulary
 
-
-print(collect_info(coll_files, stop_words)[-1]['AP881231-0146'])
-
+files, vocabulary = collect_info(coll_files, stop_words)
+print(vocabulary)
+print(len(vocabulary))
 #Step 2 Indexing
 #Input: Tokens from the preprocessing step
 #Output: An inverted index for fast access
