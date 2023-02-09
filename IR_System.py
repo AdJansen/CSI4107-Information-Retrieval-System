@@ -49,19 +49,11 @@ def collect_info(coll_files, stop_words):
                 files.append({docno: temptxt}) #We cannot check the length of the list of words because we don't know how many words are in the stop words list
     return files, vocabulary
 
-files, vocabulary = collect_info(coll_files, stop_words)
+# files, vocabulary = collect_info(coll_files, stop_words)
 
-# #Send Files to csv file
-# df = pd.DataFrame.from_dict(files)
-# df.to_csv(r"./files.csv")
+# print("vocabulary length: " , len(vocabulary))
+# print("files length: " , len(files))
 
-# #send vocabulary to csv file
-# df = pd.DataFrame.from_dict(vocabulary, orient='index')
-# df.to_csv(r"./vocabulary.csv")
-
-# print(vocabulary)
-print("vocabulary length: " , len(vocabulary))
-print("files length: " , len(files))
 #Step 2 Indexing
 #Input: Tokens from the preprocessing step
 #Output: An inverted index for fast access
@@ -95,9 +87,57 @@ def create_inverted_index(files, vocabulary):
 
     return inverted_index
 
-inverted_index = create_inverted_index(files, vocabulary)
-print(inverted_index)
-#print elapsed time
+def collect_queries():
+    queries = {}
+    list_of_words = [] 
+    
+    
+    with open(r"./topics1-50.txt", "r") as f:
+        soup = BeautifulSoup(f, 'lxml') 
+        
+        for top in soup.find_all('top'):
+            num = top.find_all('num')[0].text.strip()[0:2].strip() #this is a stupid way to do it, don't follow my example 
+
+            temptxt = str(top.find('title')).replace('<title>', ' ').replace('</title>', ' ').replace('\n', ' ') #replace the title tag with either title or top to test different query sections
+            temptxt = temptxt.lower()
+            temptxt = temptxt.translate(str.maketrans(string.punctuation, " " * len(string.punctuation)))
+            temptxt = temptxt.translate(str.maketrans(string.digits, " " * len(string.digits)))
+            
+            list_of_words = temptxt.split()
+            
+            porter = ps.PorterStemmer()
+            list_of_words = [porter.stem(word, 0, len(word)-1) for word in list_of_words]
+            
+            temptxt = list(set(list_of_words) - set(stop_words))
+            print(num)
+            queries.update({num: temptxt}) #We cannot check the length of the list of words because we don't know how many words are in the stop words list
+
+    return queries
+
+# compute cosign similarity
+def compute_cosine_similarity(query, document):
+    # cosine similarity = A.B / ||A|| * ||B||
+    # A = query
+    # B = document
+    # ||A|| = length of vector A
+    # ||B|| = length of vector B
+    # A.B = dot product of A and B
+    # dot product = sum of product of corresponding elements
+    # cosine similarity = dot product / (||A|| * ||B||)
+    print("query: ", query)
+    print("document: ", document)
+    print("query length: ", len(query))
+    print("document length: ", len(document))
+    print("intersection: ", len(set(query).intersection(set(document))))
+    print("union: ", len(set(query).union(set(document))))
+    print("intersection/union: ", len(set(query).intersection(set(document)))/len(set(query).union(set(document))))
+    return len(set(query).intersection(set(document)))/len(set(query).union(set(document)))
+
+
+# inverted_index = create_inverted_index(files, vocabulary)
+# print(inverted_index)
+queries = collect_queries()
+
 print("--- %s seconds ---" % (time.time() - start_time))
 #Step 3. Retrieval and Ranking:
 # Use the inverted index (from step 2) to find the limited set of documents that contain at least one of the query words. 
