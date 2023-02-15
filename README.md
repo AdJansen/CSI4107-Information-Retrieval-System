@@ -76,6 +76,8 @@ The main file of this project is IR_System.ipynb
 
 Using Jupyter notebooks, simply run all cells in order from top to bottom (or click Run All). This will define all functions, then execute them in order, assigning variables as needed. The display_results function will execute last and output the results data to the 'results.csv' file.
 
+Because the file is output as a csv, we converted the file to be seperated with spaces rather than commas. Thus, the final output results file is **results.txt**
+
 # Optimizations
 
 Throughout our implementation, we used dictionaries when possible. Python dictionaries are easily implemented hash tables, which are known for their efficiency. For the many different values that had to be stored and re-accessed, dictionaries seemed to be the most efficient option available in Python.
