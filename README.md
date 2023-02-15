@@ -5,14 +5,14 @@
 # Task Split
 We split the tasks equally. Each method/portion of the project was written as we all sat around Adam's Desktop computer. We are all living in the same apartment, so this arrangement made sense.
 
-This method ensured we all knew how each part of the project worked, and could collaboratively build each part with input from all parties.
+This method ensured we all knew how each part of the project worked. It also allowed us to collaboratively build each part with input from all parties.
 
 # Functions
 
 ### collect_info(coll_files, stop_words)
 This function covers preprocessing (Step 1)
 
-Iterates through the files in the collection (denoted by 'coll_files'). In each it finds the documents within, iterates through them, and splits them using the python library 'beautifulSoup'. Using beautifulSoup the docno and text are extracted from each document. This text is then sent to lowercase, has punctuation & digits removed, and is stemmed via PorterStemmer. The stopwords are then removed and the vocabulary is updated with any new terms found in that document. 
+It iterates through the files in the collection (denoted by 'coll_files'). For each file: it finds the documents within, iterates through them, and splits them using the python library 'beautifulSoup'. The docno and text are extracted from each document using beautifulSoup. This text is then set to lowercase, has punctuation & digits removed, and is stemmed via PorterStemmer. The stopwords are then removed and the vocabulary is updated with any new terms found in that document. 
 
 
 The documents are stored in a Pyton dictionary (i.e hashtable) where the key is the docno, and the value is the processed text. This allows subsequent functions to rapdily access the processed text by document id. The output vocabulary is a Python set, in other words, a python set is a way to **efficiently** store a collection of unique elements, like a dictionary but without the value part of a key value pair.
@@ -22,7 +22,7 @@ This function covers Indexing (Step 2)
 
 This function is responsible for populating our inverted index. It intakes the files and vocabulary as output by collect_info, as well as a flag that tells the function to write a csv inverted index or not. It is recommended to leave this flag False, since writing the csv is a computationally intense operation.
 
-Our inverted index is also stored in a dictionary although it is a 2-d dict (a dictionary of dictionaries) where each key is a token from the vocabulary. There are 2 static values for each key in the vocabulary: the document frequency of the token, and most token occurances in any one document, and then a set of key value pairs of a docno, and the number of times the current term appear in that document, or *tf*. 
+Our inverted index is also stored in a dictionary, although it is a 2-d dict (a dictionary of dictionaries) where each key is a token from the vocabulary. There are 2 static values for each key in the vocabulary: the document frequency of the token, and most token occurances in any one document, and then a set of key value pairs of a docno, and the number of times the current term appear in that document, or *tf*. 
 
 Again, storing the index as a dictionary is to optimize access speed, it allows rapid access of any word's DF, and any document's tf for that word 
 
@@ -41,6 +41,8 @@ A very simply function that reads the inverted index from a csv file into the Py
 ### create_tfidf_index(inverted_index, total_documents)
 
 We precompute the tfidf of each inverted_index word. The ifidf index is represented similarly to the inverted_index dictionary, but the tf value is replaced with a tfidf value. The tfidf is calculated using the modified euqation as provided in the assignment description.
+ 
+The inverted_index dictionary is copied, then modified iteratively to replace the word-document tf scores with tfidf scores. This results in a quick-running generator for these scores.
 
 ### query_tfidf_index(queries, inverted_index, total_documents)
 
@@ -185,6 +187,13 @@ The vocabulary holds 116854 unique tokens.
  
  # First 10 answers to Queries 1 and 25
  
+ 
+ 
  # Mean Average Precision on Test Queries
  
+ MAP on Query Title only: 0.1834
+ MAP on Query Title and Description: 0.1778
+ 
  # Title vs Description Discussion
+ 
+ The title only runs of our code tended to perform better. The MAP score on title was superior, and was higher by around 0.006. Overall, when using only the query title, we found the cosine similarity scores to be closer to the ideal as provided in the ideal example.
