@@ -46,7 +46,7 @@ The inverted_index dictionary is copied, then modified iteratively to replace th
 
 ### query_tfidf_index(queries, inverted_index, total_documents)
 
-
+Operates much like create_tfidf_index, but iterates over the queries, and calculates the tfidf accordingly.
 
 ### calculate_doc_lengths(files,tfidf_index)
 
@@ -189,7 +189,33 @@ The vocabulary holds 116854 unique tokens.
  
  # First 10 answers to Queries 1 and 25
  
- 
+ | TopicId | Q0 | Docno         | Ranking | Cosine Similarity   | RunId |
+|---------|----|---------------|---------|---------------------|-------|
+| 1       | Q0 | AP881206-0124 | 1       | 0.29240408625839903 | 0     |
+| 1       | Q0 | AP881021-0218 | 2       | 0.2802879644071948  | 0     |
+| 1       | Q0 | AP881002-0014 | 3       | 0.2720482743132285  | 0     |
+| 1       | Q0 | AP880420-0140 | 4       | 0.21977352650117507 | 0     |
+| 1       | Q0 | AP881225-0044 | 5       | 0.21693304799770072 | 0     |
+| 1       | Q0 | AP880229-0107 | 6       | 0.20059129588657618 | 0     |
+| 1       | Q0 | AP880815-0061 | 7       | 0.196056776848616   | 0     |
+| 1       | Q0 | AP881018-0003 | 8       | 0.19216812589168894 | 0     |
+| 1       | Q0 | AP881108-0076 | 9       | 0.1894750014168701  | 0     |
+| 1       | Q0 | AP881029-0064 | 10      | 0.18774761867607692 | 0     |
+
+| TopicId | Q0 | Docno         | Ranking | Cosine Similarity   | RunId |
+|---------|----|---------------|---------|---------------------|-------|
+| 25      | Q0 | AP880422-0078 | 1       | 0.2557015921182826  | 0     |
+| 25      | Q0 | AP880427-0240 | 2       | 0.23253772795709188 | 0     |
+| 25      | Q0 | AP880812-0017 | 3       | 0.2256459473699601  | 0     |
+| 25      | Q0 | AP880601-0144 | 4       | 0.21728077341412178 | 0     |
+| 25      | Q0 | AP880421-0196 | 5       | 0.20744840054802768 | 0     |
+| 25      | Q0 | AP880811-0163 | 6       | 0.20669828334350418 | 0     |
+| 25      | Q0 | AP880518-0140 | 7       | 0.2061713521364557  | 0     |
+| 25      | Q0 | AP880605-0026 | 8       | 0.20090486451498737 | 0     |
+| 25      | Q0 | AP880916-0009 | 9       | 0.20080090364913822 | 0     |
+| 25      | Q0 | AP880606-0019 | 10      | 0.19239385105500434 | 0     |
+
+Our cosign similarites are fairly consistent throughout the rankings from 1 to 10. The top result's cosine similarity of both queries does not exceed 0.3.
  
  # Mean Average Precision on Test Queries
  
