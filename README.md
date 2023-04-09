@@ -26,13 +26,15 @@ Our inverted index is also stored in a dictionary, although it is a 2-d dict (a 
 
 Again, storing the index as a dictionary is to optimize access speed, it allows rapid access of any word's DF, and any document's tf for that word 
 
-### collect_queries()
+### collect_queries() and expand_tokens()
 
 This acts as preprocessing, but for the query files
 
 The function acts almost identically to collect_files, but it instead reads through the "topics1-50.txt" and doesn't need to iterate over many files. It is passed in one file and iterates over the found <top> tags, applying similar operations to collect_info.
 
-It outputs a dictionary with the key value pair of {query number : [processed query text]}
+Further, this function was expanded to also output a set of expanded queries. The expansion is done using wordnet via a helper function (expand_tokens) that operates on each query iteratively. 
+
+It outputs 2 dictionaries, one dictionary with the key value pair of {query number : [processed query text]}, and another, with the key value pair of {query number : [expanded prcoessed query text]}
 
 ### read_inverted_index()
 
@@ -83,7 +85,7 @@ Because the file is output as a csv, we converted the file to be seperated with 
 Throughout our implementation, we used dictionaries when possible. Python dictionaries are easily implemented hash tables, which are known for their efficiency. For the many different values that had to be stored and re-accessed, dictionaries seemed to be the most efficient option available in Python.
 
 # Vocabulary Size
-The vocabulary holds 116854 unique tokens.
+The vocabulary holds 151729 unique tokens.
 
 # Vocabulary Sample
 'keansburg',
@@ -189,39 +191,45 @@ The vocabulary holds 116854 unique tokens.
  
  # First 10 answers to Queries 1 and 25
  
- | TopicId | Q0 | Docno         | Ranking | Cosine Similarity   | RunId |
+| TopicId | Q0 | Docno         | Ranking | Cosine Similarity   | RunId |
 |---------|----|---------------|---------|---------------------|-------|
-| 1       | Q0 | AP881206-0124 | 1       | 0.29240408625839903 | 0     |
-| 1       | Q0 | AP881021-0218 | 2       | 0.2802879644071948  | 0     |
-| 1       | Q0 | AP881002-0014 | 3       | 0.2720482743132285  | 0     |
-| 1       | Q0 | AP880420-0140 | 4       | 0.21977352650117507 | 0     |
-| 1       | Q0 | AP881225-0044 | 5       | 0.21693304799770072 | 0     |
-| 1       | Q0 | AP880229-0107 | 6       | 0.20059129588657618 | 0     |
-| 1       | Q0 | AP880815-0061 | 7       | 0.196056776848616   | 0     |
-| 1       | Q0 | AP881018-0003 | 8       | 0.19216812589168894 | 0     |
-| 1       | Q0 | AP881108-0076 | 9       | 0.1894750014168701  | 0     |
-| 1       | Q0 | AP881029-0064 | 10      | 0.18774761867607692 | 0     |
+| 3       | Q0 | AP880805-0039 | 1       | 0.29648358661499785 | 0     |
+| 3       | Q0 | AP880518-0053 | 2       | 0.23429067036557988 | 0     |
+| 3       | Q0 | AP880513-0106 | 3       | 0.22023379937638904 | 0     |
+| 3       | Q0 | AP880815-0051 | 4       | 0.2189042277779582  | 0     |
+| 3       | Q0 | AP880726-0126 | 5       | 0.202539172243783   | 0     |
+| 3       | Q0 | AP880915-0190 | 6       | 0.20184707746601574 | 0     |
+| 3       | Q0 | AP880419-0133 | 7       | 0.20098529327621664 | 0     |
+| 3       | Q0 | AP880423-0088 | 8       | 0.1991282072637553  | 0     |
+| 3       | Q0 | AP880217-0150 | 9       | 0.19864710850257702 | 0     |
+| 3       | Q0 | AP880722-0185 | 10      | 0.1955730024167017  | 0     |
 
 | TopicId | Q0 | Docno         | Ranking | Cosine Similarity   | RunId |
 |---------|----|---------------|---------|---------------------|-------|
-| 25      | Q0 | AP880422-0078 | 1       | 0.2557015921182826  | 0     |
-| 25      | Q0 | AP880427-0240 | 2       | 0.23253772795709188 | 0     |
-| 25      | Q0 | AP880812-0017 | 3       | 0.2256459473699601  | 0     |
-| 25      | Q0 | AP880601-0144 | 4       | 0.21728077341412178 | 0     |
-| 25      | Q0 | AP880421-0196 | 5       | 0.20744840054802768 | 0     |
-| 25      | Q0 | AP880811-0163 | 6       | 0.20669828334350418 | 0     |
-| 25      | Q0 | AP880518-0140 | 7       | 0.2061713521364557  | 0     |
-| 25      | Q0 | AP880605-0026 | 8       | 0.20090486451498737 | 0     |
-| 25      | Q0 | AP880916-0009 | 9       | 0.20080090364913822 | 0     |
-| 25      | Q0 | AP880606-0019 | 10      | 0.19239385105500434 | 0     |
+| 20      | Q0 | AP881110-0035 | 1       | 0.3826220931308371  | 0     |
+| 20      | Q0 | AP881122-0171 | 2       | 0.3679209745670312  | 0     |
+| 20      | Q0 | AP881111-0092 | 3       | 0.2859335911245842  | 0     |
+| 20      | Q0 | AP880627-0239 | 4       | 0.281132062682521   | 0     |
+| 20      | Q0 | AP881123-0037 | 5       | 0.2594277585670614  | 0     |
+| 20      | Q0 | AP880504-0233 | 6       | 0.19856863929511562 | 0     |
+| 20      | Q0 | AP880906-0186 | 7       | 0.19844587297642932 | 0     |
+| 20      | Q0 | AP880518-0359 | 8       | 0.18054008205719027 | 0     |
+| 20      | Q0 | AP880316-0324 | 9       | 0.15976063301105925 | 0     |
+| 20      | Q0 | AP880316-0325 | 10      | 0.15379808730541553 | 0     |
 
-Our cosign similarites are fairly consistent throughout the rankings from 1 to 10. The top result's cosine similarity of both queries does not exceed 0.3.
+Our cosign similarites are fairly consistent throughout the rankings from 1 to 10. The top result's cosine similarity of both queries does not exceed 0.4.
  
  # Mean Average Precision on Test Queries
  
  MAP on Query Title only: 0.1834
  MAP on Query Title and Description: 0.1778
+
+ MAP on Query Title and Description Expanded: 0.1367
  
  # Title vs Description Discussion
  
  The title only runs of our code tended to perform better. The MAP score on title was superior, and was higher by around 0.006. Overall, when using only the query title, we found the cosine similarity scores to be closer to the ideal as provided in the ideal example.
+
+ # Discussion on advanced Neural Information retrieval methods
+
+ Unfortunately, neither query expansion (using synonyms), nor BERT-based cosine-evaluation achieved better results than our original implementation. The query expansion value was comparable, but slightly lower by a few MAP score points. Depending on system parameters, it hovered around 0.14 compared to the 0.1834 that we achieved without it. It is hard to say exactly what caused this lowering of score, but we believe it could be related to the fact that the synoyms generated using the wordnet library were topically unrelated even when using synonyms with very high similarity scores to multiple query terms. When analyzing the query strings before and after expansion, of the words added, the synonyms were obviously related to one term, but not in the context of the greater string. This seemed to obfuscate the clarity and directness of the query, making the topic of the string less clear to both human and machine. Initial implemenations that used BERT to calculate query-document similarity were far too slow, taking either days to run a single instance, or 2 WEEKS under one calculation. This long computation time persisted despite many attempts to reduce operations. I even cried a little bit, and the computer didn't care. I resorted to bargaining, but my computer didn't speed up even when I promised to clean it after. We then changed tracks, and attempted to use a different library. We attempted to use paraphrase mining, but even when we had it operate on a very small subset of data, it still would have taken multiple days to complete execution. This was not a feasible strategy. Unfortunately, due to this immense runtime, we were not able to get a deep learning model to generate the similarity scores necessary to create a results ranking for this method.
